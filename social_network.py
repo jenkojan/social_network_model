@@ -2,6 +2,7 @@ import networkx as nx
 import random
 import numpy as np
 from scipy.stats import gamma
+import matplotlib.pyplot as plt
 
 
 def siblings_transformation(distr_siblings: dict):
