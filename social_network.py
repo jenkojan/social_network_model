@@ -3,6 +3,7 @@ import random
 import numpy as np
 from scipy.stats import gamma
 import matplotlib.pyplot as plt
+from evolution import *
 
 
 def siblings_transformation(distr_siblings: dict):
@@ -94,6 +95,7 @@ class Network:
         self.latent_nodes = [[], [], []]
         self.generations = [[], [], []]
         self.characters = {}
+        self.not_friends = list()
 
         self._distribute_people_into_generations()
         self._distribute_latent_into_generations()
@@ -110,7 +112,7 @@ class Network:
         self._connect_orphan_siblings(generation=2)
 
         self._triad_closure()
-        self._triad_closure()
+        #self._triad_closure()
 
         self._connect_people_2_latent()
 
@@ -320,7 +322,7 @@ class Network:
         for node, gen in latent_candidates:
             expected_distribution = latent_node_membership_distr[gen]
 
-            actual_distribution = {0: 0, 1: 0, 2:0}
+            actual_distribution = {0: 0, 1: 0, 2: 0}
             for person in self.network.neighbors(node):
                 for i in range(len(self.generations)):
                     if person in self.generations[i]:
@@ -360,6 +362,17 @@ class Network:
         return degrees
 
 
+def test_plot(n):
+    import copy
+    G = copy.copy(n.network)
+    isolates = list(nx.isolates(G))
+    # print(isolates)
+    G.remove_nodes_from(isolates)
+    # print(G)
+    nx.draw(G)
+    plt.show()
+
+
 if __name__ == '__main__':
     population = 1000
     n = Network(population, 30)
@@ -370,3 +383,8 @@ if __name__ == '__main__':
             print('{}: {}'.format(i, round(100 * pk[i] / population, 2)))
         except KeyError:
             pass
+
+    plot = False
+    if plot:
+        test_plot(n)
+    evolve(n)
