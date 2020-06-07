@@ -88,7 +88,7 @@ class Network:
     def __init__(self, n, m):
         self.n = n
         # m is the number of people in an average latent node
-        self.m = m
+        self.m = int(n / m)
 
         self.network = nx.Graph()
 
@@ -338,6 +338,9 @@ class Network:
 
                 error += abs(actual_distribution[key] - expected_distribution[key])
 
+            # Penalty for large groups
+            error += 2 * s / self.n
+
             errors.append(error)
 
         min_error = min(errors)
@@ -377,14 +380,29 @@ if __name__ == '__main__':
     population = 1000
     n = Network(population, 30)
 
+    '''
+
+    s = 0
+    nds = 0
+    for gen in n.latent_nodes:
+        for node in gen:
+            print(n.network.degree[node])
+            s += n.network.degree[node]
+            nds += 1
+
+    print(s, nds)
+
     pk = n.degree_sequence()
+
     for i in range(100):
         try:
             print('{}: {}'.format(i, round(100 * pk[i] / population, 2)))
         except KeyError:
             pass
+    '''
 
     plot = False
     if plot:
         test_plot(n)
     evolve(n)
+
