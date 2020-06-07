@@ -31,6 +31,16 @@ def generate_barabasi_albert(n, m, seed=None):
 def analyse_graph(G):
     print(nx.info(G))
 
+    n_components = nx.number_connected_components(G)
+    print("Number of connected components:", n_components)
+    if n_components > 1:
+        component_sizes = [
+            len(c) for c in sorted(nx.connected_components(G), key=len, reverse=True)
+        ]
+        print("Connected component sizes:", component_sizes)
+        lcc_percent = 100 * component_sizes[0]/G.number_of_nodes()
+        print(f"LCC: {lcc_percent}%")
+
     avg_c = nx.average_clustering(G)
     print("Average clustering coefficient:", avg_c)
     degree_assortativity = nx.degree_pearson_correlation_coefficient(G)
