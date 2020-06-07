@@ -35,8 +35,16 @@ def analyse_graph(G):
     print("Average clustering coefficient:", avg_c)
     degree_assortativity = nx.degree_pearson_correlation_coefficient(G)
     print("Degree assortativity:", degree_assortativity)
-    avg_d = nx.average_shortest_path_length(G)
-    print("Average distance:", avg_d)
+    if nx.is_connected(G):
+        avg_d = nx.average_shortest_path_length(G)
+        print("Average distance:", avg_d)
+    else:
+        avg_distances = [
+            nx.average_shortest_path_length(C)
+            for C in (G.subgraph(c).copy() for c in nx.connected_components(G))
+        ]
+        print("Average distances:", avg_distances)
+
     avg_connectivity = nx.average_degree_connectivity(G)
     print("Average degree connectivity:", avg_connectivity)
 
