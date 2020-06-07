@@ -16,7 +16,7 @@ class Network:
         self.latent_nodes = [[], [], []]
         self.generations = [[], [], []]
         self.characters = {}
-        self.not_friends = list()
+        self.not_friends = set()
 
         self._distribute_people_into_generations()
         self._distribute_latent_into_generations()

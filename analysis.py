@@ -31,12 +31,30 @@ def generate_barabasi_albert(n, m, seed=None):
 def analyse_graph(G):
     print(nx.info(G))
 
+    n_components = nx.number_connected_components(G)
+    print("Number of connected components:", n_components)
+    if n_components > 1:
+        component_sizes = [
+            len(c) for c in sorted(nx.connected_components(G), key=len, reverse=True)
+        ]
+        print("Connected component sizes:", component_sizes)
+        lcc_percent = 100 * component_sizes[0]/G.number_of_nodes()
+        print(f"LCC: {lcc_percent}%")
+
     avg_c = nx.average_clustering(G)
     print("Average clustering coefficient:", avg_c)
     degree_assortativity = nx.degree_pearson_correlation_coefficient(G)
     print("Degree assortativity:", degree_assortativity)
-    avg_d = nx.average_shortest_path_length(G)
-    print("Average distance:", avg_d)
+    if nx.is_connected(G):
+        avg_d = nx.average_shortest_path_length(G)
+        print("Average distance:", avg_d)
+    else:
+        avg_distances = [
+            nx.average_shortest_path_length(C)
+            for C in (G.subgraph(c).copy() for c in nx.connected_components(G))
+        ]
+        print("Average distances:", avg_distances)
+
     avg_connectivity = nx.average_degree_connectivity(G)
     print("Average degree connectivity:", avg_connectivity)
 

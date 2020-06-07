@@ -81,7 +81,7 @@ def evolution_part_2(n):
             for latent_node in latent_neighbours:
                 for neighbor in n.network.neighbors(latent_node):
                     if r < P_BREAK:
-                        n.not_friends.append((node, neighbor))
+                        n.not_friends.add((node, neighbor))
 
 def evolution_part_3(n):
     print("EVOLUTION_PART_3")
