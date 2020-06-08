@@ -71,3 +71,4 @@ def plot_degree_distribution(G):
     plt.xlabel("k")
     plt.ylabel("$p_k$")
     plt.scatter(degrees, probabilities)
+    plt.show()

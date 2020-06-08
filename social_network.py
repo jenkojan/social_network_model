@@ -297,33 +297,34 @@ def test_plot(n):
     plt.show()
 
 
-if __name__ == '__main__':
+def create_network(p_connect=None, p_break=None):
     population = 1000
-    n = Network(population, 30)
-
-    '''
-
-    s = 0
-    nds = 0
-    for gen in n.latent_nodes:
-        for node in gen:
-            print(n.network.degree[node])
-            s += n.network.degree[node]
-            nds += 1
-
-    print(s, nds)
-
-    pk = n.degree_sequence()
-
-    for i in range(100):
-        try:
-            print('{}: {}'.format(i, round(100 * pk[i] / population, 2)))
-        except KeyError:
-            pass
-    '''
-
+    n = Network(population, 200)
     plot = False
     if plot:
         test_plot(n)
-    evolution.evolve(n)
+    return evolution.evolve(n, p_connect, p_break)
+'''
+s = 0
+nds = 0
+for gen in n.latent_nodes:
+    for node in gen:
+        print(n.network.degree[node])
+        s += n.network.degree[node]
+        nds += 1
+
+print(s, nds)
+
+pk = n.degree_sequence()
+
+for i in range(100):
+    try:
+        print('{}: {}'.format(i, round(100 * pk[i] / population, 2)))
+    except KeyError:
+        pass
+'''
+
+
+if __name__ == '__main__':
+    create_network()
 

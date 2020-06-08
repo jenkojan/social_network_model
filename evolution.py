@@ -2,15 +2,19 @@ EVOLUTION_STEPS = 20
 P_BREAK = 0.2
 P_CONNECT = 0.3
 P_MAKE_FRIEND = 0.2
-TRACE = True
+TRACE = False
 
 import random
-from social_network import test_plot
+# from social_network import test_plot
 import time
 import itertools
 import networkx as nx
 
-def evolve(n):
+
+def evolve(n, p_connect=None, p_break=None):
+    if p_connect is not None and p_break is not None:
+        P_CONNECT = p_connect
+        P_BREAK = p_break
     st = time.time()
 
     for i in range(EVOLUTION_STEPS):
@@ -23,15 +27,14 @@ def evolve(n):
             print("step " + str(i) + " took " + str(time.time()-st) + " seconds. ")
 
     end_evolution(n)
-    test_plot(n)
+    nx.write_edgelist(n.network, r'/networks/7_6/network_pConn_'+str(P_CONNECT)+'_pBr_'+str(P_BREAK))
     analyze_net(n.network)
-
-    nx.write_edgelist(n.network, 'network_22_5')
-    nx.write_pajek(n.network, 'network_22_5.net')
+    # test_plot(n)
 
 
 def evolution_part_1(n):
-    print("EVOLUTION_PART_1")
+    if TRACE:
+        print("EVOLUTION_PART_1")
     '''
      First, each  person  connects  to  some  new  latent  node  with probability pi=Ei/I.  If  a  person  connects  to
       a  new latent node, it remains connected to all the other latent nodes it is connected to.
@@ -47,8 +50,6 @@ def evolution_part_1(n):
 
         gen = [(index, row.index(node)) for index, row in enumerate(n.generations) if node in row][0][0]
         r = random.random()
-
-        #TODO: Chance ni sorazmeren z evolution steps-i
         if r < n.characters[node]/(EVOLUTION_STEPS):
 
             latent_candidates = list()
@@ -61,7 +62,8 @@ def evolution_part_1(n):
 
 
 def evolution_part_2(n):
-    print("EVOLUTION_PART_2")
+    if TRACE:
+        print("EVOLUTION_PART_2")
     '''
     Each person who is connected to more than one latent node struggles to keep in touch with the people  they  know
      through  other  latent  nodes. So people with multiple latent neighbors break a connection to each person whom
@@ -80,11 +82,13 @@ def evolution_part_2(n):
             r = random.random()
             for latent_node in latent_neighbours:
                 for neighbor in n.network.neighbors(latent_node):
+
                     if r < P_BREAK:
                         n.not_friends.add((node, neighbor))
 
 def evolution_part_3(n):
-    print("EVOLUTION_PART_3")
+    if TRACE:
+        print("EVOLUTION_PART_3")
     '''
     The third part of each iteration is connecting mutual friends. Each person goes through all pairs of its
     unconnected neighbors and connects them with probability p_connect, again universal to all people.
@@ -103,7 +107,6 @@ def evolution_part_3(n):
         for latent_node in latent_neighbours:
             latents_neighbours = n.network.neighbors(latent_node)
             for neighbor in latents_neighbours:
-                #TODO: še dodaten probability če se poveže z njegovimi prijatelji namesto da se z vsakim?
                 neighbors_neighbors = list(n.network.neighbors(neighbor))
                 if r1 > P_MAKE_FRIEND:
                     continue
