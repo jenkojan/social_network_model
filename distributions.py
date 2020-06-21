@@ -86,5 +86,5 @@ siblings_transformation(siblings)
 cumulative_distribution(siblings)
 cumulative_distribution(children)
 
-character = gamma(8)
+character = gamma(2)
 
